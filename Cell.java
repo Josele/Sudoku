@@ -2,14 +2,13 @@ package com.joselemg.sudokupkg;
 
 /**
  * @author Josele
- * @version 25.03.2017
+ * @version 27.03.2017
  *
  * Description: Cell object which contains one value ( empty, one, ..., nine), two integers that indicate a position in 2D plane and
  * an attribute fix which indicate if the value can be changed.
  */
 public class Cell {
-    private final int x;
-    private final int y;
+    private final int x,y;
     private Value value;
     private final boolean fix;
 

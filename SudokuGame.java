@@ -5,9 +5,9 @@ import java.io.*;
 
 /**
  * @author Josele
- * @version 23.03.2017
+ * @version 27.03.2017
  *
- * Description: Instantiate a sudoku game. Here we could play with the sudoku or call the solver.
+ *          Description: Instantiate a sudoku game. Here we could play with the sudoku or call the solver.
  */
 public class SudokuGame {
     private final int n = 9;
@@ -19,12 +19,15 @@ public class SudokuGame {
      * @param filename
      * @throws Exception
      */
-    public SudokuGame(String filename) throws Exception {
-        Cell[][] arraycells = new Cell[n][n];
-        BufferedReader br = null;
-        FileReader fr = null;
-        int cellvalue;
+    public SudokuGame(String filename) throws RuntimeException {
+        Cell[][] arrayCells = new Cell[n][n];
+        BufferedReader br;
+        int cellValue;
         int x = 0;
+        int y = 0;
+        int len;
+        char current;
+        String warning = null;
         try {
 
             String sCurrentLine;
@@ -32,41 +35,51 @@ public class SudokuGame {
             br = new BufferedReader(new FileReader(filename));
 
             while ((sCurrentLine = br.readLine()) != null && x < 9) {
-                int y = 0;
+                y = 0;
                 sCurrentLine = sCurrentLine.trim();
                 System.out.println(sCurrentLine);
-                int len = sCurrentLine.length();
+                len = sCurrentLine.length();
                 if (len < 9) {
-                    throw new Exception("Impossible to generate the sudoku. Please check the input file.");
+                    throw new RuntimeException("Impossible to generate the sudoku. Please check the input file.");
                 }
+
                 for (int j = 0; ((j < len) && y < 9); j++) {
-                    if (Character.isDigit(sCurrentLine.charAt(j))) {
-                        cellvalue = Character.getNumericValue(sCurrentLine.charAt(j));
-                        arraycells[x][y] = new Cell(x, y, Value.fromInteger(cellvalue), true);
+                    current = sCurrentLine.charAt(j);
+                    if (Character.isDigit(current)) {
+                        cellValue = Character.getNumericValue(current);
+                        arrayCells[x][y] = new Cell(x, y, Value.fromInteger(cellValue), true);
                         y++;
-                    } else if (sCurrentLine.charAt(j) == ';') {
-                        arraycells[x][y] = new Cell(x, y);
+                    } else if (current == ';') {
+                        arrayCells[x][y] = new Cell(x, y);
                         y++;
+                    } else {
+                        throw new RuntimeException("Impossible to generate the sudoku. Please check the input file.");
                     }
+                    if (len > 9)
+                        warning = "Warning: It has been detected a possible mistake at the inputfile. However, the sudoku has been generated.";
                 }
+
+
                 x++;
             }
+            if (warning != null)
+                System.out.println(warning);
 
         } catch (IOException e) {
 
-//            e.printStackTrace();
+            System.err.println("Input file error.");
+            throw new RuntimeException(e);
 
-            System.err.println("Input file error: The input file must be in the same folder than the program");
         }
-        instance = new Sudoku(arraycells, n);
+        instance = new Sudoku(arrayCells, n);
 
     }
 
     /**
-     * solve: Solves the sudoku of the Sudokugame by calling the sudoku solver.
+     * solve: Solves the sudoku of the Sudokugame by calling the sudoku solver().
+     * The sudoku solver() is a method that implements a recursive algorithm and needs x=0 and y=0 at the begin.
      */
     public void solve() {
-
 
         if (this.solver(0, 0)) {
             instance.setStateGame(StateGame.FINISHED);
@@ -74,14 +87,13 @@ public class SudokuGame {
 
         } else {
             instance.setStateGame(StateGame.STUCK);
-
             System.out.println("There is no solution for this sudoku.");
         }
     }
 
     /**
      * solver: Recursive algorithm which solves sudokus. Try to find a value for a cell of the sudoku and then call himself for the next cell.
-     * Should be call from solve().
+     * Should be called from solve().
      *
      * @param x Row value of the current cell.
      * @param y Column value of the current cell.
@@ -89,22 +101,29 @@ public class SudokuGame {
      */
     public boolean solver(int x, int y) {
 
-        if ((x == n - 1) && x == y) {       // Ending of the recursive algorithm. X==Y, last values.
-            if (instance.isFix(x, y))       // If the cell has a fix value, we finished.
+        if ((x == n-1 && x == y)) {
+            // Ending of the recursive algorithm. X==Y, last values.
+            // If the cell has a fix value, we finished.
+            if (instance.isFix(x, y))
                 return true;
-            for (int i = 1; i <= n; i++) {  // If the cell hasn't a fix value, we try to find a value that match for that cell but we won't call solver() again.
+            // If the cell hasn't a fix value, we try to find a value that match for that cell but we won't call solver() again.
+            for (int i = 1; i <= n; i++) {
                 if (instance.playValue(x, y, Value.fromInteger(i)))
                     return true;
             }
-
-        } else {                            // For the rest of the cases, we try numbers and call solver() again.
-            if (instance.isFix(x, y)) {     // If the cell has a fix value we will return true, but before doing that we call solver
-                if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))         // We call solver() for the next cell and check if we are in the left side y==8.
+        } else {
+            // For the rest of the cases, we try numbers and call solver() again.
+            if (instance.isFix(x, y)) {
+                // If the cell has a fix value we will return true, but before doing that we call solver
+                if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))
+                    // We call solver() for the next cell and check if we are in the left side y==8.
                     return true;
             } else
-                for (int i = 1; i <= n; i++) {                       // We try to find a value that match for that cell and we will call solver() again.
+                for (int i = 1; i <= n; i++) {
+                // We try to find a value that match for that cell and we will call solver() again.
                     if (instance.playValue(x, y, Value.fromInteger(i))) {
-                        if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1)) // We call solver() for the next cell and check if we are in the left side y==8.
+                        if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))
+                            // We call solver() for the next cell and check if we are in the left side y==8.
                             return true;
                     }
                 }
