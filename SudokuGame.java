@@ -1,4 +1,3 @@
-package com.joselemg.sudokupkg;
 
 
 import java.io.*;
