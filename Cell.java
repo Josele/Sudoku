@@ -25,10 +25,21 @@ public class Cell {
         return value;
     }
 
-    public void setValue(Value value) {
-        this.value = value;
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public boolean setValue(Value value) {
+        if(!fix)
+            this.value = value;
+        return !fix;
     }
     public boolean isFix(){
        return fix;
     }
+
 }
