@@ -1,21 +1,23 @@
 package com.joselemg.sudokupkg;
 
 /**
- * Instantiate a sudoku.
- *
  * @author Josele
  * @version 23.03.2017
+ *
+ * Description: A sudoku object which contains an array of cells as board game, the state of the game and the size of the board.
+ * The default value of the size is nine.
+ *
  */
 
 public class Sudoku {
-    private static Cell[][] cells = null;
+    private Cell[][] cells = null;
     private StateGame stateGame = null;
-    private int n;
+    private int n=9;
 
     /**
-     * Constructor:  Create an empty sudoku
+     * Constructor:  Create an empty sudoku.
      *
-     * @param n
+     * @param n size of the sudoku.
      */
     public Sudoku(int n) {
         this.n = n;
@@ -29,10 +31,10 @@ public class Sudoku {
     }
 
     /**
-     * Constructor:  Create a sudoku from an array of cells
+     * Constructor:  Create a sudoku from an array of cells.
      *
-     * @param cells
-     * @param n
+     * @param cells Game board.
+     * @param n Sized of the sudoku.
      */
     public Sudoku(Cell[][] cells, int n) {
         this.n = n;
@@ -49,6 +51,7 @@ public class Sudoku {
                 for (int k = 0; k < 12; k++) {
                     System.out.print("-");
                 }
+
                 System.out.println("");
             }
             for (int y = 0; y < n; y++) {
@@ -56,29 +59,37 @@ public class Sudoku {
                     System.out.print("|");
                 System.out.print(Value.toInteger(cells[x][y].getValue()));
             }
-            System.out.println("");
+            System.out.println("|");
 
         }
 
     }
 
+    /**
+     * setStateGame: Set the state of the game.
+     *
+     * @param stateGame StateGame enum.
+     */
+    public void setStateGame(StateGame stateGame) {
+        this.stateGame = stateGame;
+    }
 
     /**
-     * getStateGame: Getter
+     * getStateGame: Getter.
      *
-     * @return a type of StateGame
+     * @return StateGame enum.
      */
     public StateGame getStateGame() {
         return stateGame;
     }
 
     /**
-     * playValue: Try to plays a value in a cell. Will return true if he was able to do it.
+     * playValue: Try to plays a value in a cell. Will return "true" if he was able to do it.
      *
-     * @param x
-     * @param y
-     * @param val
-     * @return
+     * @param x Row value.
+     * @param y Column value.
+     * @param val Value enum.
+     * @return boolean.
      */
     public boolean playValue(int x,int y, Value val)
     {
@@ -89,25 +100,25 @@ public class Sudoku {
     }
 
     /**
-     * cleanValue:
+     * cleanValue: Cleans the value of a cell defined with x and y. Fix clean can not be cleaned. Returns "true" if it succeed.
      *
-     * @param x
-     * @param y
-     * @param val
-     * @return
+     * @param x Row value.
+     * @param y Column value.
+     * @return boolean.
      */
-    public boolean cleanValue(int x,int y, Value val)
+    public boolean cleanValue(int x,int y)
     {
-        return cells[x][y].setValue(val);
+        return cells[x][y].setValue(Value.EMPTY);
 
     }
     /**
      * rowcolumncheker: check if a value can be set in a cell, respect the constraints (rules) of rows and columns in a sudoku.
      * Will return "true" if the value can be set in that cell with respect of the constraints, otherwise "false".
-     * @param x
-     * @param y
-     * @param val
-     * @return boolean
+     *
+     * @param x Row value.
+     * @param y Column value.
+     * @param val Value enum.
+     * @return boolean.
      */
     private boolean rowcolumncheker(int x,int y, Value val) {
 
@@ -123,10 +134,11 @@ public class Sudoku {
     /**
      * blockcheker: check if a value can be set in a cell, respect the constraints (rules) of blocks 3x3 in a sudoku.
      * Will return "true" if the value can be set in that cell with respect of the constraints, otherwise "false".
-     * @param x
-     * @param y
-     * @param val
-     * @return boolean
+     *
+     * @param x Row value.
+     * @param y Column value.
+     * @param val Value enum.
+     * @return boolean.
      */
     private boolean blockcheker(int x,int y, Value val) {
 
@@ -139,6 +151,14 @@ public class Sudoku {
         }
         return  true;
     }
+
+    /**
+     * isFix: Tell if the xy cell has a permanent value.
+     *
+     * @param x Row value.
+     * @param y Column value.
+     * @return boolean.
+     */
     public boolean isFix(int x,int y){
         return cells[x][y].isFix();
     }

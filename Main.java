@@ -1,7 +1,5 @@
 package com.joselemg.sudokupkg;
 
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -12,9 +10,10 @@ public class Main {
         }
         else
             oneGame =new SudokuGame(args[0]);
-
+        System.out.println("Entered sudoku:");
         oneGame.printStateGame();
         oneGame.solve();
+        System.out.println("Output sudoku:");
         oneGame.printStateGame();
 
     }

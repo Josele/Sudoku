@@ -1,26 +1,20 @@
 package com.joselemg.sudokupkg;
 
 
-import java.util.*;
 import java.io.*;
 
 /**
- * Instantiate a sudoku game. Here we could play with the sudoku or call the solver.
- *
  * @author Josele
  * @version 23.03.2017
+ *
+ * Description: Instantiate a sudoku game. Here we could play with the sudoku or call the solver.
  */
 public class SudokuGame {
     private final int n = 9;
-    private static int count = 0;
-    private static Sudoku instance = null;
-
-    public SudokuGame() {
-//        this.instance = new Sudoku();
-    }
+    private Sudoku instance = null;
 
     /**
-     * Constructor:  Create a sudokuGame
+     * Constructor:  Create a sudokuGame.
      *
      * @param filename
      * @throws Exception
@@ -32,9 +26,6 @@ public class SudokuGame {
         int cellvalue;
         int x = 0;
         try {
-
-            fr = new FileReader(filename);
-            br = new BufferedReader(fr);
 
             String sCurrentLine;
 
@@ -51,11 +42,9 @@ public class SudokuGame {
                 for (int j = 0; ((j < len) && y < 9); j++) {
                     if (Character.isDigit(sCurrentLine.charAt(j))) {
                         cellvalue = Character.getNumericValue(sCurrentLine.charAt(j));
-//                        System.out.println(sCurrentLine.charAt(j));
                         arraycells[x][y] = new Cell(x, y, Value.fromInteger(cellvalue), true);
                         y++;
                     } else if (sCurrentLine.charAt(j) == ';') {
-//                        System.out.println(sCurrentLine.charAt(j));
                         arraycells[x][y] = new Cell(x, y);
                         y++;
                     }
@@ -74,56 +63,54 @@ public class SudokuGame {
     }
 
     /**
-     * solve: solves the sudoku of the Sudokugame by calling the sudoku solver.
+     * solve: Solves the sudoku of the Sudokugame by calling the sudoku solver.
      */
     public void solve() {
 
-        System.out.println(this.solver(0, 0));
-        if (instance.getStateGame() == StateGame.FINISHED)
+
+        if (this.solver(0, 0)) {
+            instance.setStateGame(StateGame.FINISHED);
             System.out.println("The sudoku has been solved.");
-        else
+
+        } else {
+            instance.setStateGame(StateGame.STUCK);
+
             System.out.println("There is no solution for this sudoku.");
-//                }
-        System.out.println(count);
-//        System.out.println(instance.playValue(3, 8,Value.ONE));
+        }
     }
 
     /**
-     * solver: Recursive algorithm which solves sudokus
+     * solver: Recursive algorithm which solves sudokus. Try to find a value for a cell of the sudoku and then call himself for the next cell.
+     * Should be call from solve().
      *
-     * @param x
-     * @param y
-     * @return
+     * @param x Row value of the current cell.
+     * @param y Column value of the current cell.
+     * @return boolean
      */
     public boolean solver(int x, int y) {
-        count++;
+
         if ((x == n - 1) && x == y) {       // Ending of the recursive algorithm. X==Y, last values.
-            if (instance.isFix(x, y))             // Don't do anything if the call is fix
+            if (instance.isFix(x, y))       // If the cell has a fix value, we finished.
                 return true;
-            for (int i = 1; i <= n; i++) {
+            for (int i = 1; i <= n; i++) {  // If the cell hasn't a fix value, we try to find a value that match for that cell but we won't call solver() again.
                 if (instance.playValue(x, y, Value.fromInteger(i)))
                     return true;
             }
 
-        } else {                            // Rest of the cases, try numbers.
-            if (instance.isFix(x, y)) {            // Don't do anything if the call is fix
-//                System.out.println("x:" + x + " y:" + y);
-                if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))     // Call solver for the next cell
+        } else {                            // For the rest of the cases, we try numbers and call solver() again.
+            if (instance.isFix(x, y)) {     // If the cell has a fix value we will return true, but before doing that we call solver
+                if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))         // We call solver() for the next cell and check if we are in the left side y==8.
                     return true;
             } else
-                for (int i = 1; i <= n; i++) {
-//                    System.out.println("x:"+x+" y:"+y+" "+ Value.fromInteger(i));
-
-//                    if(x==3&&y==8&&Value.fromInteger(i)==Value.ONE)
-//                        instance.printSudoku();
+                for (int i = 1; i <= n; i++) {                       // We try to find a value that match for that cell and we will call solver() again.
                     if (instance.playValue(x, y, Value.fromInteger(i))) {
-                        if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))     // Call solver for the next cell
+                        if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1)) // We call solver() for the next cell and check if we are in the left side y==8.
                             return true;
                     }
                 }
 
         }
-        instance.cleanValue(x, y, Value.EMPTY);
+        instance.cleanValue(x, y);
         return false;
     }
 
@@ -131,6 +118,7 @@ public class SudokuGame {
      * printStateGame: Tells the state of the sudoku and call printSudoku().
      */
     public void printStateGame() {
+        System.out.print("The state of the game is ");
         System.out.println(instance.getStateGame());
         instance.printSudoku();
     }

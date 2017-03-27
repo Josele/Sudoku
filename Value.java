@@ -1,10 +1,20 @@
 package com.joselemg.sudokupkg;
 
 /**
- * Created by Josele on 25/03/2017.
+ * @author Josele
+ * @version 25.03.2017
+ *
+ * Enumeration of the possible values for a cell.
  */
 public enum Value {
     EMPTY,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE;
+
+    /**
+     * fromInteger: Convert a number into a Value enum.
+     *
+     * @param x Integer from 0 to 9. Otherwise will return null.
+     * @return Value enum.
+     */
     public static Value fromInteger(int x) {
         switch(x) {
             case 0:
@@ -30,6 +40,13 @@ public enum Value {
         }
         return null;
     }
+
+    /**
+     * toInteger: Convert a Value type into an integer.
+     *
+     * @param x Value enum.
+     * @return Integer.
+     */
     public static int toInteger(Value x) {
         switch(x) {
             case EMPTY:
