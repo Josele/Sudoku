@@ -4,11 +4,11 @@ package com.joselemg.sudokupkg;
  * @author Josele
  * @version 27.03.2017
  *
- * Description: Cell object which contains one value ( empty, one, ..., nine), two integers that indicate a position in 2D plane and
- * an attribute fix which indicate if the value can be changed.
+ *          Description: Cell object which contains one value ( empty, one, ..., nine), two integers that indicate a position in 2D plane and
+ *          an attribute fix which indicate if the value can be changed.
  */
 public class Cell {
-    private final int x,y;
+    private final int x, y;
     private Value value;
     private final boolean fix;
 
@@ -28,10 +28,10 @@ public class Cell {
     /**
      * Constructor: Creates a cell with a value. It can be a fix value
      *
-     * @param x Row value.
-     * @param y Column value.
+     * @param x     Row value.
+     * @param y     Column value.
      * @param value Value enum
-     * @param fix We declare if the value is fix.
+     * @param fix   We declare if the value is fix.
      */
     public Cell(int x, int y, Value value, boolean fix) {
         this.x = x;
@@ -74,7 +74,7 @@ public class Cell {
      * @return boolean.
      */
     public boolean setValue(Value value) {
-        if(!fix)
+        if (!fix)
             this.value = value;
         return !fix;
     }
@@ -84,8 +84,8 @@ public class Cell {
      *
      * @return boolean
      */
-    public boolean isFix(){
-       return fix;
+    public boolean isFix() {
+        return fix;
     }
 
 }

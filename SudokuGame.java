@@ -101,7 +101,7 @@ public class SudokuGame {
      */
     public boolean solver(int x, int y) {
 
-        if ((x == n-1 && x == y)) {
+        if ((x == n - 1 && x == y)) {
             // Ending of the recursive algorithm. X==Y, last values.
             // If the cell has a fix value, we finished.
             if (instance.isFix(x, y))
@@ -120,7 +120,7 @@ public class SudokuGame {
                     return true;
             } else
                 for (int i = 1; i <= n; i++) {
-                // We try to find a value that match for that cell and we will call solver() again.
+                    // We try to find a value that match for that cell and we will call solver() again.
                     if (instance.playValue(x, y, Value.fromInteger(i))) {
                         if (this.solver((y == 8) ? x + 1 : x, (y == 8) ? 0 : y + 1))
                             // We call solver() for the next cell and check if we are in the left side y==8.
