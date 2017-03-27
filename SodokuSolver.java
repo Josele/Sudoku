@@ -4,7 +4,7 @@ package com.joselemg.sudokupkg;
  * @author Josele
  * @version 27.03.2017
  */
-public class Main {
+public class SodokuSolver {
 
 
     public static void main(String[] args) throws Exception {
